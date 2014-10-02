@@ -1,0 +1,14 @@
+
+build.properties
+
+syntax: regexp
+^ant-build$
+syntax: regexp
+^bin$
+^\.classpath$
+syntax: regexp
+^\.settings$
+syntax: regexp
+^\.project$
+syntax: regexp
+^build

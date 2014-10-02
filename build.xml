@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="${project.name}" 
+		basedir="." 
+		default="rebuild">
+	
+	<property file="build.properties"/>
+	<property name="src" value="src"/>
+
+	<path id="compile.classpath">
+		<pathelement location="${build.dir}"/>
+		<fileset dir="${servlet.lib}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${struts-lib}">
+			<include name="*.jar"/>
+		</fileset>
+ 		<fileset dir="${postgresql}">
+ 			<include name="*.jar"/>
+ 		</fileset>
+		<fileset dir="${json-lib}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${tomcat.bin}">
+			<include name="**/*.jar"/>
+		</fileset>
+ 	</path>
+
+	<target name="compile">
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.dir}/classes"/>
+		<javac debug="true" 
+				executable="${java.home}/../bin/javac" 
+				deprecation="true" 
+				fork="true" 
+				destdir="${build.dir}/classes" 
+				srcdir="${src}" 
+				nowarn="false" 
+				classpathref="compile.classpath">
+			<src path="${src}"/>
+		</javac>
+	</target>
+
+
+
+	<target name="generate.war"
+			depends="compile">
+		<mkdir dir="${build.dir}/dest"/>
+		<copy file="${web.dir}/WEB-INF/web.xml"
+				tofile="${build.dir}/dest/WEB-INF/web.xml"
+				overwrite="true"/>
+		<war compress="false"
+				destfile="${build.dir}/dest/${archive.name}"
+				webxml="${build.dir}/dest/WEB-INF/web.xml">
+			
+			<lib dir="${web.dir}/WEB-INF/lib">
+				<include name="*.jar"/>
+			</lib>
+			<lib dir="${postgresql}">
+ 				<include name="*.jar"/>
+ 			</lib>
+			<lib dir="${json-lib}">
+ 				<include name="*.jar"/>
+ 			</lib>
+			<lib dir="${tomcat.bin}">
+ 				<include name="*.jar"/>
+ 			</lib>
+			<lib dir="${struts-lib}">
+ 				<include name="*.jar"/>
+ 			</lib>
+			<lib dir="${servlet.lib}">
+ 				<include name="*.jar"/>
+ 			</lib>
+			<classes dir="${build.dir}/classes">
+ 				<include name="**/*.class"/>
+ 			</classes>
+			<zipfileset dir="${web.dir}">
+				<include name="*.html"/>
+				<include name="*.jsp"/>
+			</zipfileset>
+			<zipfileset dir="${web.dir}/scripts" prefix="scripts">
+				<include name="*.js" />
+			</zipfileset>
+			
+			<classes dir="${src}">
+				<include name="**/*.properties"/>
+ 			</classes>
+			
+			<webinf dir="${web.dir}/WEB-INF">
+				<include name="**/*.tld"/>
+				<include name="**/*.xml"/>
+			</webinf>
+		</war>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${tomcat.home}/webapps/${project.name}"/>
+	</target>
+	
+	<target name="make" 
+			depends="generate.war"/>
+	
+	<target name="rebuild" 
+			depends="clean,make"/>
+	
+	<target name="deploy" 
+	    	depends="rebuild">
+		<copy file="${build.dir}/dest/${archive.name}" tofile="${tomcat.home}/webapps/${archive.name}" overwrite="true"/>
+	</target>
+	
+</project>
+

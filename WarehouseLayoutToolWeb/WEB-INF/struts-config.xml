@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<struts-config>
+	<form-beans>
+		<form-bean name="viewForm" type="com.warehouselayout.web.form.WarehouseLayoutForm" />
+		<form-bean name="editForm" type="com.warehouselayout.web.form.WarehouseLayoutForm" />
+		<form-bean name="indexForm" type="com.warehouselayout.web.form.IndexForm" />
+  	</form-beans>
+
+	<action-mappings>
+	   
+		<action path="/dataRetrieve" type="com.warehouselayout.web.action.AJAXAction">
+		</action>
+		
+		<action path="/addLayout" type="com.warehouselayout.web.action.AddLayout">
+		</action>
+		
+		<action name="indexForm" type="com.warehouselayout.web.action.IndexAction"
+				validate="false" scope="request" path="/index" input="/input.jsp">
+			<forward name="success" path="/index.jsp" />
+		</action>
+	    
+ 	    <action name="editForm" type="com.warehouselayout.web.action.EditAction" 
+				validate="false" scope="request" path="/editMode" input="/editMode.jsp">
+			<forward name="success" path="/editMode.jsp" />
+			<forward name="failure" path="/index.do" />
+	    </action>
+		
+		<action name="viewForm" type="com.warehouselayout.web.action.ViewAction" 
+				validate="false" scope="request" path="/viewMode" input="/viewMode.jsp">
+			<forward name="success" path="/viewMode.jsp" />
+			<forward name="failure" path="/index.do" />
+		</action>
+	    
+	</action-mappings>
+</struts-config>
